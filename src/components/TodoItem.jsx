@@ -1,4 +1,16 @@
-function TodoItem({ todo, onToggle, onDelete }) {
+import { useState } from 'react'
+
+function TodoItem({ todo, onToggle, onDelete, onEdit }) {
+  const [isEditing, setIsEditing] = useState(false)
+
+  const [editTitle, setEditTitle] = useState(todo.title)
+  const [editPriority, setEditPriority] = useState(
+    todo.priority || 'Medium'
+  )
+  const [editCategory, setEditCategory] = useState(
+    todo.category || 'Other'
+  )
+
   const priorityStyles = {
     High: 'bg-red-100 text-red-700 border-red-300',
     Medium: 'bg-orange-100 text-orange-700 border-orange-300',
@@ -16,6 +28,97 @@ function TodoItem({ todo, onToggle, onDelete }) {
       ? 'border-l-4 border-l-red-500'
       : ''
 
+  const handleEdit = () => {
+    if (editTitle.trim() === '') {
+      return
+    }
+
+    onEdit({
+      title: editTitle.trim(),
+      priority: editPriority,
+      category: editCategory,
+    })
+
+    setIsEditing(false)
+  }
+
+  const handleCancel = () => {
+    setEditTitle(todo.title)
+    setEditPriority(todo.priority || 'Medium')
+    setEditCategory(todo.category || 'Other')
+    setIsEditing(false)
+  }
+
+  const startEditing = () => {
+    setEditTitle(todo.title)
+    setEditPriority(todo.priority || 'Medium')
+    setEditCategory(todo.category || 'Other')
+    setIsEditing(true)
+  }
+
+  if (isEditing) {
+    return (
+      <li
+        className={`p-5 bg-white ${
+          highPriorityIndicator
+        }`}
+      >
+        <div className="flex flex-col gap-3">
+          {/* Title */}
+          <input
+            type="text"
+            value={editTitle}
+            onChange={(e) => setEditTitle(e.target.value)}
+            className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            autoFocus
+          />
+
+          {/* Priority and Category */}
+          <div className="flex flex-col sm:flex-row gap-3">
+            <select
+              value={editPriority}
+              onChange={(e) => setEditPriority(e.target.value)}
+              className="flex-1 px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="Low">Low Priority</option>
+              <option value="Medium">Medium Priority</option>
+              <option value="High">High Priority</option>
+            </select>
+
+            <select
+              value={editCategory}
+              onChange={(e) => setEditCategory(e.target.value)}
+              className="flex-1 px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="Work">Work</option>
+              <option value="Personal">Personal</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          {/* Save / Cancel */}
+          <div className="flex justify-end gap-2">
+            <button
+              type="button"
+              onClick={handleCancel}
+              className="px-4 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg font-medium transition-colors"
+            >
+              Cancel
+            </button>
+
+            <button
+              type="button"
+              onClick={handleEdit}
+              className="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-lg font-medium transition-colors"
+            >
+              Save
+            </button>
+          </div>
+        </div>
+      </li>
+    )
+  }
+
   return (
     <li
       className={`flex items-center justify-between p-5 transition-colors group ${
@@ -24,6 +127,7 @@ function TodoItem({ todo, onToggle, onDelete }) {
           : 'bg-white hover:bg-gray-50'
       } ${highPriorityIndicator}`}
     >
+      {/* Todo information */}
       <div className="flex items-center flex-1 min-w-0 gap-4">
         <div className="relative flex items-center justify-center">
           <input
@@ -66,6 +170,7 @@ function TodoItem({ todo, onToggle, onDelete }) {
         </div>
       </div>
 
+      {/* Actions */}
       <div className="flex items-center gap-2 ml-4">
         <button
           onClick={onToggle}
@@ -76,6 +181,13 @@ function TodoItem({ todo, onToggle, onDelete }) {
           }`}
         >
           {todo.completed ? 'Completed' : 'Complete'}
+        </button>
+
+        <button
+          onClick={startEditing}
+          className="px-3 py-2 bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-lg text-sm font-medium transition-colors"
+        >
+          Edit
         </button>
 
         <button
@@ -98,7 +210,7 @@ function TodoItem({ todo, onToggle, onDelete }) {
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={2}
-              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4v3M4 7h16"
+              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a1.995 1.995 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4v3M4 7h16"
             />
           </svg>
         </button>

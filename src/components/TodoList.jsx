@@ -1,7 +1,12 @@
 import { useState } from 'react'
 import TodoItem from './TodoItem'
 
-function TodoList({ todos, onToggleTodo, onDeleteTodo }) {
+function TodoList({
+  todos,
+  onToggleTodo,
+  onDeleteTodo,
+  onEditTodo,
+}) {
   const [searchTerm, setSearchTerm] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('All')
 
@@ -23,6 +28,7 @@ function TodoList({ todos, onToggleTodo, onDeleteTodo }) {
         <h3 className="text-lg font-medium text-gray-900 mb-2">
           No todos yet
         </h3>
+
         <p className="text-gray-500">
           Get started by adding a task above.
         </p>
@@ -58,6 +64,7 @@ function TodoList({ todos, onToggleTodo, onDeleteTodo }) {
           <h3 className="text-lg font-medium text-gray-900 mb-2">
             No matching todos
           </h3>
+
           <p className="text-gray-500">
             Try changing your search or category filter.
           </p>
@@ -73,6 +80,9 @@ function TodoList({ todos, onToggleTodo, onDeleteTodo }) {
                 todo={todo}
                 onToggle={() => onToggleTodo(todo.id)}
                 onDelete={() => onDeleteTodo(todo.id)}
+                onEdit={(updatedData) =>
+                  onEditTodo(todo.id, updatedData)
+                }
               />
             ))}
           </ul>
