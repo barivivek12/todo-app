@@ -47,8 +47,37 @@ const initialTodos = [
   },
 ]
 
+const initialActivities = initialTodos.reduce((activities, todo) => {
+  activities[todo.id] = [
+    {
+      id: `${todo.id}-created`,
+      action: 'Todo created',
+      timestamp: new Date().toLocaleString(),
+    },
+  ]
+
+  return activities
+}, {})
+
 function App() {
   const [todos, setTodos] = useState(initialTodos)
+  const [activities, setActivities] = useState(initialActivities)
+
+  const addActivity = (todoId, action) => {
+    const newActivity = {
+      id: Date.now(),
+      action,
+      timestamp: new Date().toLocaleString(),
+    }
+
+    setActivities((currentActivities) => ({
+      ...currentActivities,
+      [todoId]: [
+        ...(currentActivities[todoId] || []),
+        newActivity,
+      ],
+    }))
+  }
 
   const addTodo = (title, priority, category) => {
     const newTodo = {
@@ -59,34 +88,76 @@ function App() {
       category,
     }
 
-    setTodos([newTodo, ...todos])
+    setTodos((currentTodos) => [newTodo, ...currentTodos])
+
+    setActivities((currentActivities) => ({
+      ...currentActivities,
+      [newTodo.id]: [
+        {
+          id: `${newTodo.id}-created`,
+          action: 'Todo created',
+          timestamp: new Date().toLocaleString(),
+        },
+      ],
+    }))
   }
 
   const toggleTodo = (id) => {
-    setTodos(
-      todos.map((todo) =>
-        todo.id === id
-          ? { ...todo, completed: !todo.completed }
-          : todo
+    const todo = todos.find((item) => item.id === id)
+
+    if (!todo) return
+
+    const newCompletedState = !todo.completed
+
+    setTodos((currentTodos) =>
+      currentTodos.map((item) =>
+        item.id === id
+          ? { ...item, completed: newCompletedState }
+          : item
       )
     )
+
+    if (newCompletedState) {
+      addActivity(id, 'Todo completed')
+    }
   }
 
   const deleteTodo = (id) => {
-    setTodos(todos.filter((todo) => todo.id !== id))
+    addActivity(id, 'Todo deleted')
+
+    setTodos((currentTodos) =>
+      currentTodos.filter((todo) => todo.id !== id)
+    )
   }
 
   const editTodo = (id, updatedData) => {
-    setTodos(
-      todos.map((todo) =>
+    const oldTodo = todos.find((todo) => todo.id === id)
+
+    if (!oldTodo) return
+
+    setTodos((currentTodos) =>
+      currentTodos.map((todo) =>
         todo.id === id
           ? { ...todo, ...updatedData }
           : todo
       )
     )
+
+    addActivity(id, 'Todo edited')
+
+    if (
+      oldTodo.priority !== updatedData.priority
+    ) {
+      addActivity(id, 'Priority changed')
+    }
+
+    if (
+      oldTodo.category !== updatedData.category
+    ) {
+      addActivity(id, 'Category changed')
+    }
   }
 
-  // Todo statistics
   const totalTodos = todos.length
 
   const completedTodos = todos.filter(
@@ -142,7 +213,9 @@ function App() {
           </div>
 
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 text-center">
-            <p className="text-sm text-gray-500">High Priority</p>
+            <p className="text-sm text-gray-500">
+              High Priority
+            </p>
             <p className="text-2xl font-bold text-red-600">
               {highPriorityTodos}
             </p>
@@ -154,6 +227,7 @@ function App() {
           onToggleTodo={toggleTodo}
           onDeleteTodo={deleteTodo}
           onEditTodo={editTodo}
+          activities={activities}
         />
       </div>
     </div>

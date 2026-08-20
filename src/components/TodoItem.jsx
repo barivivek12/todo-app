@@ -1,7 +1,14 @@
 import { useState } from 'react'
 
-function TodoItem({ todo, onToggle, onDelete, onEdit }) {
+function TodoItem({
+  todo,
+  onToggle,
+  onDelete,
+  onEdit,
+  activities,
+}) {
   const [isEditing, setIsEditing] = useState(false)
+  const [showDetails, setShowDetails] = useState(false)
 
   const [editTitle, setEditTitle] = useState(todo.title)
   const [editPriority, setEditPriority] = useState(
@@ -59,12 +66,9 @@ function TodoItem({ todo, onToggle, onDelete, onEdit }) {
   if (isEditing) {
     return (
       <li
-        className={`p-5 bg-white ${
-          highPriorityIndicator
-        }`}
+        className={`p-5 bg-white ${highPriorityIndicator}`}
       >
         <div className="flex flex-col gap-3">
-          {/* Title */}
           <input
             type="text"
             value={editTitle}
@@ -73,7 +77,6 @@ function TodoItem({ todo, onToggle, onDelete, onEdit }) {
             autoFocus
           />
 
-          {/* Priority and Category */}
           <div className="flex flex-col sm:flex-row gap-3">
             <select
               value={editPriority}
@@ -96,7 +99,6 @@ function TodoItem({ todo, onToggle, onDelete, onEdit }) {
             </select>
           </div>
 
-          {/* Save / Cancel */}
           <div className="flex justify-end gap-2">
             <button
               type="button"
@@ -121,15 +123,14 @@ function TodoItem({ todo, onToggle, onDelete, onEdit }) {
 
   return (
     <li
-      className={`flex items-center justify-between p-5 transition-colors group ${
+      className={`p-5 transition-colors group ${
         todo.completed
           ? 'bg-gray-100 opacity-75'
           : 'bg-white hover:bg-gray-50'
       } ${highPriorityIndicator}`}
     >
-      {/* Todo information */}
-      <div className="flex items-center flex-1 min-w-0 gap-4">
-        <div className="relative flex items-center justify-center">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center flex-1 min-w-0 gap-4">
           <input
             type="checkbox"
             checked={todo.completed}
@@ -137,83 +138,115 @@ function TodoItem({ todo, onToggle, onDelete, onEdit }) {
             className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
             aria-label={`Complete ${todo.title}`}
           />
+
+          <div className="flex flex-col gap-2 min-w-0">
+            <span
+              className={`text-lg font-semibold truncate ${
+                todo.completed
+                  ? 'text-gray-400 line-through'
+                  : 'text-gray-800'
+              }`}
+            >
+              {todo.title}
+            </span>
+
+            <div className="flex flex-wrap items-center gap-2">
+              <span
+                className={`text-xs font-bold px-2.5 py-1 rounded-full border ${
+                  priorityStyles[todo.priority || 'Medium']
+                }`}
+              >
+                {todo.priority || 'Medium'}
+              </span>
+
+              <span
+                className={`text-xs font-bold px-2.5 py-1 rounded-full border ${
+                  categoryStyles[todo.category || 'Other']
+                }`}
+              >
+                {todo.category || 'Other'}
+              </span>
+            </div>
+          </div>
         </div>
 
-        <div className="flex flex-col gap-2 min-w-0">
-          <span
-            className={`text-lg font-semibold truncate transition-all duration-200 ${
+        <div className="flex items-center gap-2 ml-4">
+          <button
+            onClick={onToggle}
+            className={`px-3 py-2 rounded-lg text-sm font-medium ${
               todo.completed
-                ? 'text-gray-400 line-through'
-                : 'text-gray-800'
+                ? 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                : 'bg-green-100 text-green-700 hover:bg-green-200'
             }`}
           >
-            {todo.title}
-          </span>
+            {todo.completed ? 'Completed' : 'Complete'}
+          </button>
 
-          <div className="flex flex-wrap items-center gap-2">
-            <span
-              className={`text-xs font-bold px-2.5 py-1 rounded-full border ${
-                priorityStyles[todo.priority || 'Medium']
-              }`}
-            >
-              {todo.priority || 'Medium'}
-            </span>
+          <button
+            onClick={startEditing}
+            className="px-3 py-2 bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-lg text-sm font-medium"
+          >
+            Edit
+          </button>
 
-            <span
-              className={`text-xs font-bold px-2.5 py-1 rounded-full border ${
-                categoryStyles[todo.category || 'Other']
-              }`}
-            >
-              {todo.category || 'Other'}
-            </span>
-          </div>
+          <button
+            onClick={(e) => {
+              e.stopPropagation()
+              onDelete()
+            }}
+            className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg"
+            aria-label="Delete todo"
+            title="Delete"
+          >
+            🗑️
+          </button>
         </div>
       </div>
 
-      {/* Actions */}
-      <div className="flex items-center gap-2 ml-4">
+      {/* Details / Activity */}
+      <div className="mt-4">
         <button
-          onClick={onToggle}
-          className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-            todo.completed
-              ? 'bg-gray-200 text-gray-600 hover:bg-gray-300'
-              : 'bg-green-100 text-green-700 hover:bg-green-200'
-          }`}
+          type="button"
+          onClick={() => setShowDetails(!showDetails)}
+          className="text-sm font-medium text-blue-600 hover:text-blue-800"
         >
-          {todo.completed ? 'Completed' : 'Complete'}
+          {showDetails ? 'Hide Details' : 'View Details'}
         </button>
 
-        <button
-          onClick={startEditing}
-          className="px-3 py-2 bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-lg text-sm font-medium transition-colors"
-        >
-          Edit
-        </button>
+        {showDetails && (
+          <div className="mt-3 bg-gray-50 rounded-lg p-4 border border-gray-200">
+            <h4 className="font-semibold text-gray-800 mb-3">
+              Activity History
+            </h4>
 
-        <button
-          onClick={(e) => {
-            e.stopPropagation()
-            onDelete()
-          }}
-          className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-red-500"
-          aria-label="Delete todo"
-          title="Delete"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a1.995 1.995 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4v3M4 7h16"
-            />
-          </svg>
-        </button>
+            {activities.length === 0 ? (
+              <p className="text-sm text-gray-500">
+                No activity recorded.
+              </p>
+            ) : (
+              <div className="space-y-3">
+                {[...activities].reverse().map((activity) => (
+                  <div
+                    key={activity.id}
+                    className="flex items-start gap-3"
+                  >
+                    <div className="w-2 h-2 mt-2 rounded-full bg-blue-500" />
+
+                    <div>
+                      <p className="text-sm font-medium text-gray-800">
+                        {activity.action}
+                      </p>
+
+                      <p className="text-xs text-gray-500">
+                        {activity.timestamp}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </li>
   )
