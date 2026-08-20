@@ -86,6 +86,21 @@ function App() {
     )
   }
 
+  // Todo statistics
+  const totalTodos = todos.length
+
+  const completedTodos = todos.filter(
+    (todo) => todo.completed
+  ).length
+
+  const activeTodos = todos.filter(
+    (todo) => !todo.completed
+  ).length
+
+  const highPriorityTodos = todos.filter(
+    (todo) => todo.priority === 'High'
+  ).length
+
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl mx-auto">
@@ -101,6 +116,37 @@ function App() {
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
           <TodoForm onAddTodo={addTodo} />
+        </div>
+
+        {/* Todo Statistics */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 text-center">
+            <p className="text-sm text-gray-500">Total</p>
+            <p className="text-2xl font-bold text-gray-900">
+              {totalTodos}
+            </p>
+          </div>
+
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 text-center">
+            <p className="text-sm text-gray-500">Active</p>
+            <p className="text-2xl font-bold text-blue-600">
+              {activeTodos}
+            </p>
+          </div>
+
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 text-center">
+            <p className="text-sm text-gray-500">Completed</p>
+            <p className="text-2xl font-bold text-green-600">
+              {completedTodos}
+            </p>
+          </div>
+
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 text-center">
+            <p className="text-sm text-gray-500">High Priority</p>
+            <p className="text-2xl font-bold text-red-600">
+              {highPriorityTodos}
+            </p>
+          </div>
         </div>
 
         <TodoList
