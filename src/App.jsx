@@ -62,6 +62,7 @@ const initialActivities = initialTodos.reduce((activities, todo) => {
 function App() {
   const [todos, setTodos] = useState(initialTodos)
   const [activities, setActivities] = useState(initialActivities)
+  const [darkMode, setDarkMode] = useState(false)
 
   const addActivity = (todoId, action) => {
     const newActivity = {
@@ -145,15 +146,11 @@ function App() {
 
     addActivity(id, 'Todo edited')
 
-    if (
-      oldTodo.priority !== updatedData.priority
-    ) {
+    if (oldTodo.priority !== updatedData.priority) {
       addActivity(id, 'Priority changed')
     }
 
-    if (
-      oldTodo.category !== updatedData.category
-    ) {
+    if (oldTodo.category !== updatedData.category) {
       addActivity(id, 'Category changed')
     }
   }
@@ -173,55 +170,146 @@ function App() {
   ).length
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div
+      className={`min-h-screen py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-300 ${
+        darkMode ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'
+      }`}
+    >
       <div className="max-w-2xl mx-auto">
+
+        {/* Header */}
         <div className="text-center mb-10">
-          <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight mb-2">
+          <div className="flex justify-end mb-6">
+            <button
+              type="button"
+              onClick={() => setDarkMode(!darkMode)}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                darkMode
+                  ? 'bg-gray-700 text-white hover:bg-gray-600'
+                  : 'bg-gray-900 text-white hover:bg-gray-800'
+              }`}
+            >
+              {darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
+            </button>
+          </div>
+
+          <h1
+            className={`text-4xl font-extrabold tracking-tight mb-2 ${
+              darkMode ? 'text-white' : 'text-gray-900'
+            }`}
+          >
             Todo Manager
           </h1>
 
-          <p className="text-lg text-gray-500">
+          <p
+            className={`text-lg ${
+              darkMode ? 'text-gray-300' : 'text-gray-500'
+            }`}
+          >
             Manage your tasks and stay productive.
           </p>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
+        {/* Todo Form */}
+        <div
+          className={`rounded-xl shadow-sm border p-6 mb-8 ${
+            darkMode
+              ? 'bg-gray-800 border-gray-700'
+              : 'bg-white border-gray-100'
+          }`}
+        >
           <TodoForm onAddTodo={addTodo} />
         </div>
 
-        {/* Todo Statistics */}
+        {/* Statistics */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 text-center">
-            <p className="text-sm text-gray-500">Total</p>
-            <p className="text-2xl font-bold text-gray-900">
+
+          <div
+            className={`rounded-xl shadow-sm border p-4 text-center ${
+              darkMode
+                ? 'bg-gray-800 border-gray-700'
+                : 'bg-white border-gray-100'
+            }`}
+          >
+            <p
+              className={
+                darkMode ? 'text-gray-400' : 'text-gray-500'
+              }
+            >
+              Total
+            </p>
+
+            <p
+              className={`text-2xl font-bold ${
+                darkMode ? 'text-white' : 'text-gray-900'
+              }`}
+            >
               {totalTodos}
             </p>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 text-center">
-            <p className="text-sm text-gray-500">Active</p>
-            <p className="text-2xl font-bold text-blue-600">
+          <div
+            className={`rounded-xl shadow-sm border p-4 text-center ${
+              darkMode
+                ? 'bg-gray-800 border-gray-700'
+                : 'bg-white border-gray-100'
+            }`}
+          >
+            <p
+              className={
+                darkMode ? 'text-gray-400' : 'text-gray-500'
+              }
+            >
+              Active
+            </p>
+
+            <p className="text-2xl font-bold text-blue-500">
               {activeTodos}
             </p>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 text-center">
-            <p className="text-sm text-gray-500">Completed</p>
-            <p className="text-2xl font-bold text-green-600">
+          <div
+            className={`rounded-xl shadow-sm border p-4 text-center ${
+              darkMode
+                ? 'bg-gray-800 border-gray-700'
+                : 'bg-white border-gray-100'
+            }`}
+          >
+            <p
+              className={
+                darkMode ? 'text-gray-400' : 'text-gray-500'
+              }
+            >
+              Completed
+            </p>
+
+            <p className="text-2xl font-bold text-green-500">
               {completedTodos}
             </p>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 text-center">
-            <p className="text-sm text-gray-500">
+          <div
+            className={`rounded-xl shadow-sm border p-4 text-center ${
+              darkMode
+                ? 'bg-gray-800 border-gray-700'
+                : 'bg-white border-gray-100'
+            }`}
+          >
+            <p
+              className={
+                darkMode ? 'text-gray-400' : 'text-gray-500'
+              }
+            >
               High Priority
             </p>
-            <p className="text-2xl font-bold text-red-600">
+
+            <p className="text-2xl font-bold text-red-500">
               {highPriorityTodos}
             </p>
           </div>
         </div>
 
+        {/* Todo List */}
         <TodoList
           todos={todos}
           onToggleTodo={toggleTodo}
