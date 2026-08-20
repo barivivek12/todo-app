@@ -5,6 +5,12 @@ function TodoItem({ todo, onToggle, onDelete }) {
     Low: 'bg-gray-100 text-gray-600 border-gray-300',
   }
 
+  const categoryStyles = {
+    Work: 'bg-blue-100 text-blue-700 border-blue-200',
+    Personal: 'bg-purple-100 text-purple-700 border-purple-200',
+    Other: 'bg-gray-100 text-gray-600 border-gray-200',
+  }
+
   const highPriorityIndicator =
     todo.priority === 'High'
       ? 'border-l-4 border-l-red-500'
@@ -18,7 +24,6 @@ function TodoItem({ todo, onToggle, onDelete }) {
           : 'bg-white hover:bg-gray-50'
       } ${highPriorityIndicator}`}
     >
-      {/* Todo information */}
       <div className="flex items-center flex-1 min-w-0 gap-4">
         <div className="relative flex items-center justify-center">
           <input
@@ -30,8 +35,7 @@ function TodoItem({ todo, onToggle, onDelete }) {
           />
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:items-center gap-2 min-w-0">
-          {/* Todo title */}
+        <div className="flex flex-col gap-2 min-w-0">
           <span
             className={`text-lg font-semibold truncate transition-all duration-200 ${
               todo.completed
@@ -42,20 +46,27 @@ function TodoItem({ todo, onToggle, onDelete }) {
             {todo.title}
           </span>
 
-          {/* Priority */}
-          <span
-            className={`text-xs font-bold px-2.5 py-1 rounded-full border ${
-              priorityStyles[todo.priority || 'Medium']
-            }`}
-          >
-            {todo.priority || 'Medium'}
-          </span>
+          <div className="flex flex-wrap items-center gap-2">
+            <span
+              className={`text-xs font-bold px-2.5 py-1 rounded-full border ${
+                priorityStyles[todo.priority || 'Medium']
+              }`}
+            >
+              {todo.priority || 'Medium'}
+            </span>
+
+            <span
+              className={`text-xs font-bold px-2.5 py-1 rounded-full border ${
+                categoryStyles[todo.category || 'Other']
+              }`}
+            >
+              {todo.category || 'Other'}
+            </span>
+          </div>
         </div>
       </div>
 
-      {/* Actions */}
       <div className="flex items-center gap-2 ml-4">
-        {/* Complete button */}
         <button
           onClick={onToggle}
           className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
@@ -67,7 +78,6 @@ function TodoItem({ todo, onToggle, onDelete }) {
           {todo.completed ? 'Completed' : 'Complete'}
         </button>
 
-        {/* Delete button */}
         <button
           onClick={(e) => {
             e.stopPropagation()
