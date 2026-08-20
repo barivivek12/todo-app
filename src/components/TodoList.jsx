@@ -6,6 +6,7 @@ function TodoList({
   onToggleTodo,
   onDeleteTodo,
   onEditTodo,
+  activities,
 }) {
   const [searchTerm, setSearchTerm] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('All')
@@ -83,6 +84,7 @@ function TodoList({
                 onEdit={(updatedData) =>
                   onEditTodo(todo.id, updatedData)
                 }
+                activities={activities[todo.id] || []}
               />
             ))}
           </ul>
