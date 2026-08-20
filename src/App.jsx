@@ -76,6 +76,16 @@ function App() {
     setTodos(todos.filter((todo) => todo.id !== id))
   }
 
+  const editTodo = (id, updatedData) => {
+    setTodos(
+      todos.map((todo) =>
+        todo.id === id
+          ? { ...todo, ...updatedData }
+          : todo
+      )
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl mx-auto">
@@ -97,6 +107,7 @@ function App() {
           todos={todos}
           onToggleTodo={toggleTodo}
           onDeleteTodo={deleteTodo}
+          onEditTodo={editTodo}
         />
       </div>
     </div>
