@@ -5,52 +5,62 @@ import TodoList from './components/TodoList'
 const initialTodos = [
   {
     id: 1,
-    title: "Complete GitHub assignment",
+    title: 'Complete GitHub assignment',
     completed: false,
+    priority: 'Medium',
   },
   {
     id: 2,
-    title: "Review pull request",
+    title: 'Review pull request',
     completed: true,
+    priority: 'Low',
   },
   {
     id: 3,
-    title: "Fix login page layout",
+    title: 'Fix login page layout',
     completed: false,
+    priority: 'High',
   },
   {
     id: 4,
-    title: "Update project documentation",
+    title: 'Update project documentation',
     completed: false,
+    priority: 'Medium',
   },
   {
     id: 5,
-    title: "Write unit tests",
+    title: 'Write unit tests',
     completed: true,
+    priority: 'High',
   },
   {
     id: 6,
-    title: "Deploy the application",
+    title: 'Deploy the application',
     completed: false,
+    priority: 'High',
   },
-];
+]
 
 function App() {
   const [todos, setTodos] = useState(initialTodos)
 
-  const addTodo = (title) => {
+  const addTodo = (title, priority) => {
     const newTodo = {
       id: Date.now(),
       title,
       completed: false,
+      priority,
     }
+
     setTodos([newTodo, ...todos])
   }
 
   const toggleTodo = (id) => {
     setTodos(
       todos.map((todo) =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo
+        todo.id === id
+          ? { ...todo, completed: !todo.completed }
+          : todo
       )
     )
   }
@@ -66,19 +76,20 @@ function App() {
           <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight mb-2">
             Todo Manager
           </h1>
+
           <p className="text-lg text-gray-500">
             Manage your tasks and stay productive.
           </p>
         </div>
-        
+
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
           <TodoForm onAddTodo={addTodo} />
         </div>
 
-        <TodoList 
-          todos={todos} 
-          onToggleTodo={toggleTodo} 
-          onDeleteTodo={deleteTodo} 
+        <TodoList
+          todos={todos}
+          onToggleTodo={toggleTodo}
+          onDeleteTodo={deleteTodo}
         />
       </div>
     </div>
