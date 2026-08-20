@@ -8,48 +8,55 @@ const initialTodos = [
     title: 'Complete GitHub assignment',
     completed: false,
     priority: 'Medium',
+    category: 'Work',
   },
   {
     id: 2,
     title: 'Review pull request',
     completed: true,
     priority: 'Low',
+    category: 'Work',
   },
   {
     id: 3,
     title: 'Fix login page layout',
     completed: false,
     priority: 'High',
+    category: 'Work',
   },
   {
     id: 4,
     title: 'Update project documentation',
     completed: false,
     priority: 'Medium',
+    category: 'Other',
   },
   {
     id: 5,
     title: 'Write unit tests',
     completed: true,
     priority: 'High',
+    category: 'Work',
   },
   {
     id: 6,
     title: 'Deploy the application',
     completed: false,
     priority: 'High',
+    category: 'Work',
   },
 ]
 
 function App() {
   const [todos, setTodos] = useState(initialTodos)
 
-  const addTodo = (title, priority) => {
+  const addTodo = (title, priority, category) => {
     const newTodo = {
       id: Date.now(),
       title,
       completed: false,
       priority,
+      category,
     }
 
     setTodos([newTodo, ...todos])
